@@ -1,0 +1,23 @@
+   name: Run USD/PKR CatBoost forecast
+   on:
+     workflow_dispatch:
+   jobs:
+     forecast:
+       runs-on: ubuntu-latest
+       timeout-minutes: 60
+       env:
+         MPLBACKEND: Agg
+       steps:
+         - uses: actions/checkout@v4
+         - uses: actions/setup-python@v5
+           with:
+             python-version: "3.11"
+         - run: pip install -r requirements.txt
+         - run: python usdpkr_catboost_forecast.py data/few_factor_train_data.xlsx 6 12 26
+         - uses: actions/upload-artifact@v4
+           with:
+             name: forecast-outputs
+             path: |
+               data/forecast_*.xlsx
+               data/forecast_*.png
+               data/backtest_usdpkr.png
